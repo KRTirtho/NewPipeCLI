@@ -20,17 +20,6 @@ jobs:
           distribution: 'graalvm'
           components: 'native-image'
 
-      - name: Install UPX
-        shell: bash
-        run: |
-          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
-            sudo apt-get update && sudo apt-get install -y upx-ucl
-          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            choco install upx -y
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            brew install upx
-          fi
-
       - name: Build native executable
         run: ./gradlew clean nativeCompile
       
