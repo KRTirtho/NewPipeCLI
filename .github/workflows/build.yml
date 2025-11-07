@@ -39,4 +39,4 @@ jobs:
         with:
           name: newpipecli-${{ matrix.os }}
           path: |
-            build/distributions/NewPipeCLI.zip
+            app/build/distributions/NewPipeCLI.zip
