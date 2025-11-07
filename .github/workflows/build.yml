@@ -54,6 +54,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
+          name: ${{ matrix.zipName }}
           path: |
             app/build/distributions/NewPipeCLI-${{ matrix.zipName }}.zip
 
