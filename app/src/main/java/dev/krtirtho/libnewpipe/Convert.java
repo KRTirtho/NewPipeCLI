@@ -253,7 +253,9 @@ public final class Convert {
         map.put("category", streamInfo.getCategory());
         map.put("licence", streamInfo.getLicence());
         map.put("supportInfo", streamInfo.getSupportInfo());
+        if(streamInfo.getLanguageInfo() != null) {
          map.put("language", streamInfo.getLanguageInfo().getDisplayName());
+        }
         map.put("tags", streamInfo.getTags());
 //         map.put("streamSegments", streamInfo.getStreamSegments().stream().map(Convert::strea));
         // map.put("metaInfo", streamInfo.getMetaInfo()); // Commented out as in Kotlin source
