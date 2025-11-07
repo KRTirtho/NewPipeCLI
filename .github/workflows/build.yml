@@ -18,6 +18,8 @@ jobs:
         include:
           - os: ubuntu-latest
             zipName: linux-x64
+          - os: ubuntu-24.04-arm
+            zipName: linux-arm64
           - os: windows-latest
             zipName: windows-x64
           - os: macos-latest
