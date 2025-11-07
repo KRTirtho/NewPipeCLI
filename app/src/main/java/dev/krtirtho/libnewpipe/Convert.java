@@ -88,7 +88,7 @@ public final class Convert {
      */
     public static Map<String, Object> itagItemMap(ItagItem v) {
         Map<String, Object> map = new HashMap<>();
-        map.put("mediaFormat", v.getMediaFormat() != null ? v.getMediaFormat().name() : null);
+        map.put("mediaFormat", v.getMediaFormat() != null ? v.getMediaFormat().name : null);
         map.put("id", v.id);
         map.put("itagType", v.itagType != null ? v.itagType.name() : null);
         map.put("avgBitrate", v.getAverageBitrate());
@@ -127,7 +127,7 @@ public final class Convert {
         Map<String, Object> map = new HashMap<>();
         map.put("id", v.getId());
         // Accessing nullable fields requires explicit check
-        map.put("mediaFormat", v.getFormat() != null ? v.getFormat().name() : null);
+        map.put("mediaFormat", v.getFormat() != null ? v.getFormat().name : null);
         map.put("content", v.getContent());
         map.put("isUrl", v.isUrl());
         map.put("deliveryMethod", v.getDeliveryMethod().name());
