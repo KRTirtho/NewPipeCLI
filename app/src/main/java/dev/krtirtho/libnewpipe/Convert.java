@@ -76,9 +76,7 @@ public final class Convert {
     public static Map<String, Object> descriptionMap(Description d) {
         Map<String, Object> map = new HashMap<>();
         map.put("content", d.getContent());
-        // Enums need .name() in Java
-        map.put("type", d.getType() == Description.HTML ? "HTML" :
-                d.getType() == Description.MARKDOWN ? "MARKDOWN" : d.getType() == Description.PLAIN_TEXT ? "PLAIN_TEXT" : null);
+        map.put("type", d.getType());
         return map;
     }
 
