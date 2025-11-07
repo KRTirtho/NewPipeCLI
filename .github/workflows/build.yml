@@ -15,8 +15,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        zipName: [linux-x64, windows-x64, macos-universal]
+        include:
+          - os: ubuntu-latest
+            zipName: linux-x64
+          - os: windows-latest
+            zipName: windows-x64
+          - os: macos-latest
+            zipName: macos-universal
+            
     runs-on: ${{ matrix.os }}
 
     steps:
