@@ -51,8 +51,7 @@ graalvmNative {
     binaries {
         named("main") {
             javaLauncher.set(javaToolchains.launcherFor {
-                languageVersion.set(JavaLanguageVersion.of(17))
-                vendor.set(JvmVendorSpec.matching("Oracle Corporation"))
+                languageVersion.set(JavaLanguageVersion.of(25))
             })
             debug.set(false)
             imageName.set("NewPipeCLI")
@@ -84,6 +83,7 @@ tasks.register<Exec>("compressNativeImage") {
 
     commandLine = when {
         os.isWindows -> listOf("upx", "-9", "$nativeFile.exe")
+        os.isMacOsX -> listOf("upx", "-9", nativeFile.absolutePath, "--force-macos")
         else -> listOf("upx", "-9", nativeFile.absolutePath)
     }
 }
