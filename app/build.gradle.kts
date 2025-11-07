@@ -30,7 +30,7 @@ dependencies {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -61,6 +61,7 @@ graalvmNative {
             buildArgs.addAll(listOf(
                 "-Ob",
                 "-H:+ReportExceptionStackTraces",
+                "-H:-CheckToolchain",
                 "-H:+AllowIncompleteClasspath",
                 "-H:EnableURLProtocols=http,https",
                 "--no-fallback",
@@ -73,21 +74,22 @@ graalvmNative {
     }
 }
 
-tasks.register<Exec>("compressNativeImage") {
+val os = OperatingSystem.current()
+val nativeBinaryName = if (os.isWindows) "NewPipeCLI.exe" else "NewPipeCLI"
+val nativeBinaryPath = buildDir.resolve("native/nativeCompile/$nativeBinaryName")
+
+tasks.register<Zip>("zipNativeImage") {
     group = "build"
-    description = "Compress GraalVM native image binary with UPX"
+    description = "Create a zip archive containing the native executable binary"
     dependsOn("nativeCompile")
 
-    val os = OperatingSystem.current()
-    val nativeFile = buildDir.resolve("native/nativeCompile/NewPipeCLI")
-
-    commandLine = when {
-        os.isWindows -> listOf("upx", "-9", "$nativeFile.exe")
-        os.isMacOsX -> listOf("upx", "-9", nativeFile.absolutePath, "--force-macos")
-        else -> listOf("upx", "-9", nativeFile.absolutePath)
+    from(nativeBinaryPath.parentFile) {
+        include(nativeBinaryName)
     }
+    archiveFileName.set("NewPipeCLI.zip")
+    destinationDirectory.set(layout.buildDirectory.dir("distributions"))
 }
 
 tasks.named("nativeCompile") {
-    finalizedBy("compressNativeImage")
+    finalizedBy("zipNativeImage")
 }
