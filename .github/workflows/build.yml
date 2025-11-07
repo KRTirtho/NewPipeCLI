@@ -19,6 +19,12 @@ jobs:
           java-version: '25'
           distribution: 'graalvm'
 
+      - name: Windows create same temp dir
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          echo "" "org.gradle.jvmargs=-Djava.io.tmpdir=D:/temp" >> gradle.properties
+          mkdir D:/temp
+
       - name: Build native executable
         run: ./gradlew clean nativeCompile
       
