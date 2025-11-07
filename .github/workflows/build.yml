@@ -2,12 +2,21 @@ name: Build NewPipeCLI
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        type: string
+        description: Tag (Version to release)
+        required: true
+
+permissions:
+  contents: write
 
 jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        zipName: [linux-x64, windows-x64, macos-universal]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -16,8 +25,8 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          java-version: '25'
-          distribution: 'graalvm'
+          java-version: "25"
+          distribution: "graalvm"
 
       - name: Windows create same temp dir
         if: ${{ matrix.os == 'windows-latest' }}
@@ -26,8 +35,10 @@ jobs:
           mkdir D:/temp
 
       - name: Build native executable
-        run: ./gradlew clean nativeCompile
-      
+        run: |
+          ./gradlew clean nativeCompile
+          mv app/build/distributions/NewPipeCLI.zip app/build/distributions/NewPipeCLI-${{ matrix.zipName }}.zip
+
       - name: Debug With SSH When fails
         if: ${{ failure() }}
         uses: mxschmitt/action-tmate@v3
@@ -37,6 +48,25 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
         with:
-          name: newpipecli-${{ matrix.os }}
           path: |
-            app/build/distributions/NewPipeCLI.zip
+            app/build/distributions/NewPipeCLI-${{ matrix.zipName }}.zip
+
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v5
+        with:
+          path: ./distributions
+
+      - name: Upload Release Binaries (stable)
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ inputs.tag }}
+          omitBodyDuringUpdate: true
+          omitNameDuringUpdate: true
+          omitPrereleaseDuringUpdate: true
+          allowUpdates: true
+          draft: true
+          artifacts: ./distributions/**/*.zip
