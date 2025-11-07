@@ -1,0 +1,45 @@
+name: Build NewPipeCLI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up GraalVM
+        uses: actions/setup-java@v3
+        with:
+          distribution: graalvm
+          java-version: 17.0.9
+          cache: true
+
+      - name: Install Native Image
+        run: gu install native-image
+
+      - name: Install UPX
+        run: |
+          if [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            sudo apt-get update && sudo apt-get install -y upx-ucl
+          elif [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            choco install upx -y
+          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
+            brew install upx
+          fi
+
+      - name: Build native executable
+        run: ./gradlew clean nativeCompile
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: newpipecli-${{ matrix.os }}
+          path: |
+            build/native/nativeCompile/NewPipeCLI*
