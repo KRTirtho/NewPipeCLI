@@ -22,9 +22,7 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.newpipe.extractor)
     implementation(libs.okhttp3)
-
-    // Logging dependency (required by NewPipeExtractor, simple implementation for CLI)
-    implementation(libs.slf4j.simple)
+    implementation(libs.nanojson)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -36,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = "org.example.App"
+    mainClass = "dev.krtirtho.libnewpipe.NewPipe"
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {
@@ -59,13 +57,28 @@ graalvmNative {
             mainClass.set(application.mainClass)
             sharedLibrary.set(false)
 
-            buildArgs.add("--no-fallback")
-//            buildArgs.add("--link-at-build-time")
-//            buildArgs.add("--initialize-at-build-time")
-            buildArgs.add("--no-server")
-            buildArgs.add("--allow-incomplete-classpath")
-            buildArgs.add("--gc=epsilon") // smaller runtime footprint
-            buildArgs.add("--enable-url-protocols=http,https") // if only HTTP needed
+            buildArgs.addAll(listOf(
+                "-Ob",
+                "-H:+ReportExceptionStackTraces",
+                "-H:+AllowIncompleteClasspath",
+                "-H:EnableURLProtocols=http,https",
+                "--no-fallback",
+                "--gc=epsilon",
+                "-H:CCompilerOption=-fpic",
+                "-H:NativeLinkerOption=-fpic",
+                "--initialize-at-run-time=dev.krtirtho.libnewpipe.NewPipe,org.schabi.newpipe.extractor.NewPipe,org.schabi.newpipe.extractor.services.youtube.YoutubeService"
+            ))
         }
     }
+}
+
+tasks.register<Exec>("compressNativeImage") {
+    group = "build"
+    description = "Compress GraalVM native image binary with UPX"
+    dependsOn("nativeCompile")
+    commandLine("upx", "-9", "$buildDir/native/nativeCompile/NewPipeCLI")
+}
+
+tasks.named("nativeCompile") {
+    finalizedBy("compressNativeImage")
 }

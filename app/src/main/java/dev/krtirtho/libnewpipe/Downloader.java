@@ -1,4 +1,4 @@
-package org.example;
+package dev.krtirtho.libnewpipe;
 
 import org.schabi.newpipe.extractor.downloader.Request;
 import org.schabi.newpipe.extractor.downloader.Response;
