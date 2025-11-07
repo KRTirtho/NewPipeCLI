@@ -18,9 +18,7 @@ jobs:
         with:
           java-version: '17'
           distribution: 'graalvm'
-
-      - name: Install Native Image
-        run: gu install native-image
+          components: 'native-image'
 
       - name: Install UPX
         run: |
