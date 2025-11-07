@@ -18,7 +18,6 @@ jobs:
         with:
           java-version: '25'
           distribution: 'graalvm'
-          components: 'native-image'
 
       - name: Build native executable
         run: ./gradlew clean nativeCompile
