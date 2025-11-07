@@ -113,7 +113,9 @@ public final class Convert {
         map.put("audioTrackId", v.getAudioTrackId());
         map.put("audioTrackName", v.getAudioTrackName());
         map.put("audioTrackType", v.getAudioTrackType() != null ? v.getAudioTrackType().name() : null);
-        // map.put("audioLocale", v.getAudioLocale()); // Commented out as in Kotlin source
+        if (v.getAudioLocale() != null) {
+            map.put("audioLocale", v.getAudioLocale().getDisplayName());
+        }
         return map;
     }
 
@@ -187,7 +189,9 @@ public final class Convert {
         map.put("codec", v.getCodec());
         map.put("audioTrackId", v.getAudioTrackId());
         map.put("audioTrackName", v.getAudioTrackName());
-//        map.put("audioLocale", v.getAudioLocale().toString());
+        if (v.getAudioLocale() != null) {
+            map.put("audioLocale", v.getAudioLocale().getDisplayName());
+        }
         map.put("audioTrackType", v.getAudioTrackType() != null ? v.getAudioTrackType().name() : null);
 
         // Explicit null check and conversion for nested object
@@ -243,17 +247,17 @@ public final class Convert {
 
         map.put("dashMpdUrl", streamInfo.getDashMpdUrl());
         map.put("hlsUrl", streamInfo.getHlsUrl());
-        // map.put("relatedItems", streamInfo.getRelatedItems()); // Commented out as in Kotlin source
+        map.put("relatedItems", streamInfo.getRelatedItems().stream().map(Convert::infoItemInternalMap).toList());
         map.put("startPosition", streamInfo.getStartPosition());
-        // map.put("subtitles", streamInfo.getSubtitles()); // Commented out as in Kotlin source
+//         map.put("subtitles", streamInfo.getSubtitles().stream().map(Convert::).toList());); // Commented out as in Kotlin source
         map.put("host", streamInfo.getHost());
         // map.put("privacy", streamInfo.getPrivacy()); // Commented out as in Kotlin source
         map.put("category", streamInfo.getCategory());
         map.put("licence", streamInfo.getLicence());
         map.put("supportInfo", streamInfo.getSupportInfo());
-        // map.put("language", streamInfo.getLanguageInfo()); // Commented out as in Kotlin source
+         map.put("language", streamInfo.getLanguageInfo().getDisplayName());
         map.put("tags", streamInfo.getTags());
-        // map.put("streamSegments", streamInfo.getStreamSegments()); // Commented out as in Kotlin source
+//         map.put("streamSegments", streamInfo.getStreamSegments().stream().map(Convert::strea));
         // map.put("metaInfo", streamInfo.getMetaInfo()); // Commented out as in Kotlin source
         map.put("shortFormContent", streamInfo.isShortFormContent());
         // map.put("previewFrames", streamInfo.getPreviewFrames()); // Commented out as in Kotlin source
@@ -335,7 +339,7 @@ public final class Convert {
 
         // Explicit cast and null check for uploadDate
         map.put("uploadDate", info.getUploadDate() != null
-                ? dateWrapperMap((DateWrapper) info.getUploadDate())
+                ? dateWrapperMap(info.getUploadDate())
                 : null);
 
         map.put("viewCount", info.getViewCount());
