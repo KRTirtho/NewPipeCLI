@@ -33,6 +33,12 @@ jobs:
 
       - name: Build native executable
         run: ./gradlew clean nativeCompile
+      
+      - name: Debug With SSH When fails
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v5
