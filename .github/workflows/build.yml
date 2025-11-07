@@ -22,7 +22,7 @@ jobs:
             zipName: windows-x64
           - os: macos-latest
             zipName: macos-universal
-            
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -58,6 +58,8 @@ jobs:
             app/build/distributions/NewPipeCLI-${{ matrix.zipName }}.zip
 
   release:
+    needs:
+      - build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
