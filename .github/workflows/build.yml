@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up GraalVM
         uses: actions/setup-java@v5
@@ -38,7 +38,7 @@ jobs:
         run: ./gradlew clean nativeCompile
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: newpipecli-${{ matrix.os }}
           path: |
