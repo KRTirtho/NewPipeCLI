@@ -3,10 +3,10 @@
 
 [versions]
 guava = "33.4.6-jre"
-newpipeExtractor = "e4e5ccc1fdef8afc684cf00cd01ecb19cc7ef4b0" # Check for latest version
+newpipeExtractor = "6992806323864d353c90ae180fa79bf3d98f07c8" # Check for latest version
 graalvmNative = "0.11.2"
 okhttp3 = "4.12.0"
-nanojson = "e9d656ddb49a412a5a0a5d5ef20ca7ef09549996"
+nanojson = "c7a6c1c08d16b6d5ecded34758e6415e07be2166"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
